@@ -15,8 +15,6 @@
         <aspectj.version>1.9.7</aspectj.version>
         <!-- версия Allure -->
         <allure.version>2.21.0</allure.version>
-        <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
-        <allure-junit4.version>2.6.0</allure-junit4.version>
     </properties>
 
     <dependencies>
@@ -47,12 +45,6 @@
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-rest-assured</artifactId>
             <version>${allure.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.9.2</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

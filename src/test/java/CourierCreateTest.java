@@ -3,7 +3,6 @@ import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.DisplayName;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,7 +23,6 @@ public class CourierCreateTest {
 
     //При создании нового курьера 201 код ответа и "ок": true
     @Test
-    @DisplayName("create courier and check that response code is 200 and field ok is true")
     public void createNewCourierAndCheckResponse() {
         Response response =
                 given()
