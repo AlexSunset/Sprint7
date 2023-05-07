@@ -1,116 +1,83 @@
-import io.restassured.RestAssured;
+import io.qameta.allure.Description;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
 
-public class CourierLoginTest {
+public class CourierLoginTest extends BaseTest {
 
-    private String login = "sunset";
-    private String password = "123";
-    private String firstName = "Alex";
-
-    CreateCourier createCourier = new CreateCourier(login, password, firstName);
-    LoginCourier loginCourier = new LoginCourier(login, password);
-
-    //Создание тестового курьера
     @Before
-    public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(createCourier)
-                .when()
-                .post("/api/v1/courier");
+    public void createCourierForTest(){
+        courierApi.createNewCourier(createCourierJson);
     }
 
     //Успешный логин и статус код 200
     @Test
+    @Description("Basic login test. Status code is 200")
     public void successLogin(){
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(createCourier)
-                .when()
-                .post("/api/v1/courier/login")
+        courierApi.loginCourier(loginCourierJson)
                 .then()
-                .statusCode(200);
+                .statusCode(SC_OK);
     }
 
     //Логин без логина, статус код 400 и сообщение об ошибке
     @Test
+    @Description("Trying to login without login word - response code is 400 and actual error message")
     public void loginWithoutLoginError(){
-        loginCourier.setLogin("");
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(loginCourier)
-                .when()
-                .post("/api/v1/courier/login")
+        loginCourierJson.setLogin("");
+        courierApi.loginCourier(loginCourierJson)
                 .then()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .and()
                 .body("message", equalTo("Недостаточно данных для входа"));
     }
 
     //Логин без пароля, статус код 400 и сообщение об ошибке
     @Test
+    @Description("Trying to login without password - response code is 400 and actual error message")
     public void loginWithoutPasswordError(){
-        loginCourier.setPassword("");
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(loginCourier)
-                .when()
-                .post("/api/v1/courier/login")
+        loginCourierJson.setPassword("");
+        courierApi.loginCourier(loginCourierJson)
                 .then()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .and()
                 .body("message", equalTo("Недостаточно данных для входа"));
     }
 
 
     @Test
+    @Description("Trying to login with wrong login word - response code is 404 and actual error message")
     public void wrongLogin(){
-        loginCourier.setLogin("wrong");
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(loginCourier)
-                .when()
-                .post("/api/v1/courier/login")
+        loginCourierJson.setLogin("wrong");
+        courierApi.loginCourier(loginCourierJson)
                 .then()
-                .statusCode(404)
+                .statusCode(SC_NOT_FOUND)
                 .and()
                 .body("message", equalTo("Учетная запись не найдена"));
     }
 
     @Test
+    @Description("Trying to login with wrong password - response code is 404 and actual error message")
     public void wrongPassword(){
-        loginCourier.setPassword("wrong");
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(loginCourier)
-                .when()
-                .post("/api/v1/courier/login")
+        loginCourierJson.setPassword("wrong");
+        courierApi.loginCourier(loginCourierJson)
                 .then()
-                .statusCode(404)
+                .statusCode(SC_NOT_FOUND)
                 .and()
                 .body("message", equalTo("Учетная запись не найдена"));
     }
 
     @After
     public void deleteCourier(){
-        loginCourier.setLogin(login);
-        loginCourier.setPassword(password);
+        loginCourierJson.setLogin(login);
+        loginCourierJson.setPassword(password);
         int id = given()
                 .header("Content-type", "application/json")
                 .and()
-                .body(loginCourier)
+                .body(loginCourierJson)
                 .when()
                 .post("/api/v1/courier/login")
                 .then().extract().path("id");

@@ -1,62 +1,41 @@
-import io.restassured.RestAssured;
+import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.hamcrest.Matchers.equalTo;
 
-public class CourierFailCreateTest {
+public class CourierFailCreateTest extends BaseTest {
 
-    private String login = "sunset";
-    private String password = "123";
-    private String firstName = "Alex";
-
-    CreateCourier createCourier = new CreateCourier(login, password, firstName);
-
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
-    }
 
     //Нельзя создать курьера без указания логина
     @Test
+    @Description("When trying create courier without login - response code is 400 and actual error message")
     public void cannotCreateCourierWithoutLogin() {
-        createCourier.setLogin(null);
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(createCourier)
-                        .when()
-                        .post("/api/v1/courier");
+        createCourierJson.setLogin(null);
+        Response response = courierApi.createNewCourier(createCourierJson);
 
         response.then().assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
                 .and()
-                .statusCode(400);
+                .statusCode(SC_BAD_REQUEST);
     }
 
     //Нельзя создать курьера без указания пароля
     @Test
+    @Description("When trying create courier without password - response code is 400 and actual error message")
     public void cannotCreateCourierWithoutPassword() {
-        createCourier.setPassword(null);
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(createCourier)
-                        .when()
-                        .post("/api/v1/courier");
+        createCourierJson.setPassword(null);
+        Response response = courierApi.createNewCourier(createCourierJson);
 
         response.then().assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
                 .and()
-                .statusCode(400);
+                .statusCode(SC_BAD_REQUEST);
     }
 
     @After
     public void setDefault(){
-        createCourier.setLogin(login);
-        createCourier.setPassword(password);
+        createCourierJson.setLogin(login);
+        createCourierJson.setPassword(password);
     }
 }

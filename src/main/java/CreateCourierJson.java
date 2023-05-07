@@ -1,16 +1,16 @@
-public class CreateCourier {
+public class CreateCourierJson {
 
     private String login;
     private String password;
     private String firstName;
 
-    public CreateCourier(String login, String password, String firstName) {
+    public CreateCourierJson(String login, String password, String firstName) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
     }
 
-    public CreateCourier() {
+    public CreateCourierJson() {
     }
 
 

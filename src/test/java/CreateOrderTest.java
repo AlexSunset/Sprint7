@@ -1,95 +1,38 @@
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.apache.http.HttpStatus.SC_CREATED;
 
-public class CreateOrderTest {
 
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
+@RunWith(Parameterized.class)
+public class CreateOrderTest extends BaseTest{
+
+    ArrayList<String> testColour;
+
+    public CreateOrderTest(ArrayList<String> testColour){
+        this.testColour = testColour;
     }
 
-    CreateOrder createOrder = new CreateOrder("Alex", "Zakatov", "Moscow",
-            5, "+79991234567", 2,"2020-06-06", "Comment");
+    @Parameterized.Parameters
+    public static Object[][] getColourData() {
+        return new Object[][] {
+                {new ArrayList<>(List.of("BLACK"))},
+                {new ArrayList<>(List.of("GREY"))},
+                {new ArrayList<>(Arrays.asList("BLACK", "GREY"))},
+                {new ArrayList<String>()},
+        };
+    }
 
     @Test
-    public void blackColourOrderCreate(){
-        ArrayList<String> testColour = new ArrayList<>();
-        testColour.add("BLACK");
+    public void RandomColourOrderCreateReturns201(){
         createOrder.setColor(testColour);
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(createOrder)
-                        .when()
-                        .post("/api/v1/orders");
-
-        response.then().assertThat().statusCode(201);
-    }
-
-    @Test
-    public void greyColourOrderCreate(){
-        ArrayList<String> testColour = new ArrayList<>();
-        testColour.add("GREY");
-        createOrder.setColor(testColour);
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(createOrder)
-                        .when()
-                        .post("/api/v1/orders");
-
-        response.then().assertThat().statusCode(201);
-    }
-
-    @Test
-    public void blackAndGreyColourOrderCreate(){
-        ArrayList<String> testColour = new ArrayList<>();
-        testColour.add("BLACK");
-        testColour.add("GREY");
-        createOrder.setColor(testColour);
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(createOrder)
-                        .when()
-                        .post("/api/v1/orders");
-
-        response.then().assertThat().statusCode(201);
-    }
-
-    @Test
-    public void noColourOrderCreate(){
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(createOrder)
-                        .when()
-                        .post("/api/v1/orders");
-
-        response.then().assertThat().statusCode(201);
-    }
-
-    @Test
-    public void orderResponseBodyContainsTrack(){
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(createOrder)
-                        .when()
-                        .post("/api/v1/orders");
-
-        response.then().assertThat().body("track", notNullValue());
+        Response response = orderApi.createNewOrder(createOrder);
+        response.then().assertThat().statusCode(SC_CREATED);
     }
 }

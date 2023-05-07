@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class CreateOrder {
+public class CreateOrderJson {
 
     private String firstName;
     private String lastName;
@@ -12,7 +12,7 @@ public class CreateOrder {
     private String comment;
     private ArrayList<String> color;
 
-    public CreateOrder(String firstName, String lastName, String address, int metroStation, String phone, int rentTime, String deliveryDate, String comment) {
+    public CreateOrderJson(String firstName, String lastName, String address, int metroStation, String phone, int rentTime, String deliveryDate, String comment) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -23,7 +23,7 @@ public class CreateOrder {
         this.comment = comment;
     }
 
-    public CreateOrder(){
+    public CreateOrderJson(){
     }
 
     public String getFirstName() {

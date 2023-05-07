@@ -1,15 +1,15 @@
-public class LoginCourier {
+public class LoginCourierJson {
 
 
     private String login;
     private String password;
 
-    public LoginCourier(String login, String password) {
+    public LoginCourierJson(String login, String password) {
         this.login = login;
         this.password = password;
     }
 
-    public LoginCourier() {
+    public LoginCourierJson() {
     }
 
 
