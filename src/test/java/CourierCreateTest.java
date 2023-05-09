@@ -3,17 +3,17 @@ import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Test;
 
-import static io.restassured.RestAssured.given;
-import static org.apache.http.HttpStatus.*;
+import static org.apache.http.HttpStatus.SC_CONFLICT;
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.hamcrest.Matchers.equalTo;
 
-public class CourierCreateTest extends BaseTest{
+public class CourierCreateTest extends BaseTest {
 
     //При создании нового курьера 201 код ответа и "ок": true
     @Test
     @Description("When create new courier - response code is 200 and response body contains ok: true")
     public void createNewCourierAndCheckResponse() {
-        Response response = courierApi.createNewCourier(createCourierJson);
+        Response response = courierApi.createNewCourier(createCourierPOJO);
         response.then().assertThat().body("ok", equalTo(true))
                 .and()
                 .statusCode(SC_CREATED);
@@ -23,21 +23,15 @@ public class CourierCreateTest extends BaseTest{
     @Test
     @Description("When trying to create two same couriers - response code is 409 and actual error message")
     public void cannotCreateTwoSameCouriers() {
-        courierApi.createNewCourier(createCourierJson);
-        Response response = courierApi.createNewCourier(createCourierJson);
+        courierApi.createNewCourier(createCourierPOJO);
+        Response response = courierApi.createNewCourier(createCourierPOJO);
         response.then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
                 .and().statusCode(SC_CONFLICT);
     }
 
     @After
-    public void deleteCourier(){
-        int id = given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(loginCourierJson)
-                .when()
-                .post("/api/v1/courier/login")
-                .then().extract().path("id");
-        given().delete("/api/v1/courier/" + id);
+    public void deleteCourier() {
+        int id = courierApi.getCourierId(loginCourierPOJO);
+        courierApi.deleteCourier(id);
     }
 }

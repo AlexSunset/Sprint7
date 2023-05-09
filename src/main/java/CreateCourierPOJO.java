@@ -1,16 +1,16 @@
-public class CreateCourierJson {
+public class CreateCourierPOJO {
 
     private String login;
     private String password;
     private String firstName;
 
-    public CreateCourierJson(String login, String password, String firstName) {
+    public CreateCourierPOJO(String login, String password, String firstName) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
     }
 
-    public CreateCourierJson() {
+    public CreateCourierPOJO() {
     }
 
 

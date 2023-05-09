@@ -10,15 +10,15 @@ import static org.hamcrest.Matchers.equalTo;
 public class CourierLoginTest extends BaseTest {
 
     @Before
-    public void createCourierForTest(){
-        courierApi.createNewCourier(createCourierJson);
+    public void createCourierForTest() {
+        courierApi.createNewCourier(createCourierPOJO);
     }
 
     //Успешный логин и статус код 200
     @Test
     @Description("Basic login test. Status code is 200")
-    public void successLogin(){
-        courierApi.loginCourier(loginCourierJson)
+    public void successLogin() {
+        courierApi.loginCourier(loginCourierPOJO)
                 .then()
                 .statusCode(SC_OK);
     }
@@ -26,9 +26,9 @@ public class CourierLoginTest extends BaseTest {
     //Логин без логина, статус код 400 и сообщение об ошибке
     @Test
     @Description("Trying to login without login word - response code is 400 and actual error message")
-    public void loginWithoutLoginError(){
-        loginCourierJson.setLogin("");
-        courierApi.loginCourier(loginCourierJson)
+    public void loginWithoutLoginError() {
+        loginCourierPOJO.setLogin("");
+        courierApi.loginCourier(loginCourierPOJO)
                 .then()
                 .statusCode(SC_BAD_REQUEST)
                 .and()
@@ -38,9 +38,9 @@ public class CourierLoginTest extends BaseTest {
     //Логин без пароля, статус код 400 и сообщение об ошибке
     @Test
     @Description("Trying to login without password - response code is 400 and actual error message")
-    public void loginWithoutPasswordError(){
-        loginCourierJson.setPassword("");
-        courierApi.loginCourier(loginCourierJson)
+    public void loginWithoutPasswordError() {
+        loginCourierPOJO.setPassword("");
+        courierApi.loginCourier(loginCourierPOJO)
                 .then()
                 .statusCode(SC_BAD_REQUEST)
                 .and()
@@ -50,9 +50,9 @@ public class CourierLoginTest extends BaseTest {
 
     @Test
     @Description("Trying to login with wrong login word - response code is 404 and actual error message")
-    public void wrongLogin(){
-        loginCourierJson.setLogin("wrong");
-        courierApi.loginCourier(loginCourierJson)
+    public void wrongLogin() {
+        loginCourierPOJO.setLogin("wrong");
+        courierApi.loginCourier(loginCourierPOJO)
                 .then()
                 .statusCode(SC_NOT_FOUND)
                 .and()
@@ -61,9 +61,9 @@ public class CourierLoginTest extends BaseTest {
 
     @Test
     @Description("Trying to login with wrong password - response code is 404 and actual error message")
-    public void wrongPassword(){
-        loginCourierJson.setPassword("wrong");
-        courierApi.loginCourier(loginCourierJson)
+    public void wrongPassword() {
+        loginCourierPOJO.setPassword("wrong");
+        courierApi.loginCourier(loginCourierPOJO)
                 .then()
                 .statusCode(SC_NOT_FOUND)
                 .and()
@@ -71,13 +71,13 @@ public class CourierLoginTest extends BaseTest {
     }
 
     @After
-    public void deleteCourier(){
-        loginCourierJson.setLogin(login);
-        loginCourierJson.setPassword(password);
+    public void deleteCourier() {
+        loginCourierPOJO.setLogin(login);
+        loginCourierPOJO.setPassword(password);
         int id = given()
                 .header("Content-type", "application/json")
                 .and()
-                .body(loginCourierJson)
+                .body(loginCourierPOJO)
                 .when()
                 .post("/api/v1/courier/login")
                 .then().extract().path("id");

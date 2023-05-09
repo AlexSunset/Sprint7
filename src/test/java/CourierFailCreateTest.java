@@ -13,8 +13,8 @@ public class CourierFailCreateTest extends BaseTest {
     @Test
     @Description("When trying create courier without login - response code is 400 and actual error message")
     public void cannotCreateCourierWithoutLogin() {
-        createCourierJson.setLogin(null);
-        Response response = courierApi.createNewCourier(createCourierJson);
+        createCourierPOJO.setLogin(null);
+        Response response = courierApi.createNewCourier(createCourierPOJO);
 
         response.then().assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
                 .and()
@@ -25,8 +25,8 @@ public class CourierFailCreateTest extends BaseTest {
     @Test
     @Description("When trying create courier without password - response code is 400 and actual error message")
     public void cannotCreateCourierWithoutPassword() {
-        createCourierJson.setPassword(null);
-        Response response = courierApi.createNewCourier(createCourierJson);
+        createCourierPOJO.setPassword(null);
+        Response response = courierApi.createNewCourier(createCourierPOJO);
 
         response.then().assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
                 .and()
@@ -34,8 +34,8 @@ public class CourierFailCreateTest extends BaseTest {
     }
 
     @After
-    public void setDefault(){
-        createCourierJson.setLogin(login);
-        createCourierJson.setPassword(password);
+    public void setDefault() {
+        createCourierPOJO.setLogin(login);
+        createCourierPOJO.setPassword(password);
     }
 }
